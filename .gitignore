@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+
+# PyInstaller artifacts
+build/
+dist/
+app/
+
+# Generated calibration / verification outputs
+cali_data/train_result/
+cali_data/test_result/
+train_result/
+test_result/
+
+# Extra sample data (keep image0 + test_image only)
+cali_data/data/image2/
+cali_data/data/image3/
+cali_data/data/image4/
+cali_data/data/image5/
+cali_data/data/image6/
+cali_data/data/image7/
+cali_data/data/image8/
+cali_data/data/test8/
+cali_data/data/*.zip
+
+# Misc
+软著申请/
+实习总结.pptx
+.DS_Store
+.idea/
+.vscode/
