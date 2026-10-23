@@ -1,20 +1,22 @@
-# Zhang Calibration · 张氏相机标定与畸变校正验证
+# Zhang Calibration · Camera Calibration and Distortion Validation
 
-基于**张正友棋盘格标定法**的桌面软件，用于相机内参标定、图像去畸变，以及标定结果的物理尺寸验证与 Excel 报告导出。
+A desktop application based on **Zhang's checkerboard calibration method** for estimating camera intrinsics, correcting image distortion, validating physical measurements, and exporting Excel reports.
 
-## 功能概览
+The application interface and detailed user manual are currently in Chinese. This README provides the project overview and setup instructions in English.
 
-- **相机标定**：批量读取棋盘格照片，检测角点，求解内参矩阵与畸变系数（k1, k2, p1, p2, k3），输出 `.npz` / `.txt`
-- **畸变校正验证**：加载标定文件，对验证图去畸变，在固定裁剪区域内自动检测棋盘格，测量格子物理长度并判定是否在容差内
-- **图形界面**：PyQt5 + Fluent 风格 UI，支持 JPG / PNG / HEIC
-- **命令行**：`camera_calibration.py` 与 `image_undistort.py` 可独立运行
+## Features
 
-## 环境要求
+- **Camera calibration**: Detect checkerboard corners in a batch of images, estimate the camera matrix and distortion coefficients (`k1`, `k2`, `p1`, `p2`, `k3`), and export `.npz` or `.txt` results.
+- **Distortion validation**: Load calibration parameters, undistort validation images, detect checkerboard corners within a fixed crop, and check measured square sizes against a tolerance.
+- **Graphical interface**: PyQt5 with Fluent styling and support for JPG, PNG, and HEIC images.
+- **Command-line tools**: Run `camera_calibration.py` and `image_undistort.py` independently.
+
+## Requirements
 
 - Python 3.8+
-- macOS 或 Windows
+- macOS or Windows
 
-## 安装
+## Installation
 
 ```bash
 cd calibration
@@ -24,33 +26,33 @@ source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-## 运行（图形界面，推荐）
+## Run the graphical application
 
 ```bash
 python zhang_calibration_app.py
 ```
 
-### GUI 使用流程
+### GUI workflow
 
-**标签页 1：标定与结果**
+**Tab 1: Calibration and results**
 
-1. 点击「选择标定图片目录」，选择包含多张棋盘格照片的文件夹
-2. 设置内角点列数、行数（例如 9×6）与格子边长（mm）
-3. 点击「开始标定」，查看内参、畸变系数与重投影误差
-4. 导出 `.npz` 标定文件
+1. Select the calibration image folder containing multiple checkerboard photographs.
+2. Set the inner corner columns and rows, such as 9×6, and the square size in millimeters.
+3. Start calibration and review the camera matrix, distortion coefficients, and reprojection error.
+4. Export the calibration results as an `.npz` file.
 
-**标签页 2：畸变校正验证**
+**Tab 2: Distortion validation**
 
-1. 加载上一步生成的 `.npz`（或 `.txt`）标定文件
-2. 选择验证图片目录
-3. 设置格子边长与容差（mm），系统自动去畸变并检测
-4. 查看矫正前/后对比图，导出 Excel 验证报告
+1. Load the `.npz` calibration file created in the previous step. The command-line tool also supports `.txt` files.
+2. Select the validation image folder.
+3. Set the square size and tolerance in millimeters. The application automatically corrects the selected image and detects corners.
+4. Compare the images before and after correction, then export an Excel validation report.
 
-更详细的界面说明见 [`软件手册.md`](软件手册.md)。
+For detailed interface documentation, see the [user manual (Chinese)](%E8%BD%AF%E4%BB%B6%E6%89%8B%E5%86%8C.md).
 
-## 运行（命令行）
+## Run the command-line tools
 
-### 标定
+### Calibration
 
 ```bash
 python camera_calibration.py \
@@ -60,48 +62,47 @@ python camera_calibration.py \
   --square_size 5.0
 ```
 
-输出写入项目根目录下的 `train_result/`（运行时自动创建）。
+Outputs are saved under `train_result/` in the project root. This directory is created automatically.
 
-### 导出可读 txt
+### Export readable text
 
 ```bash
 python camera_calibration.py --mode export
 ```
 
-### 去畸变与验证
+### Undistortion and validation
 
 ```bash
 python image_undistort.py \
   --image cali_data/data/test_image/IMG_4757.jpg \
-  --calib train_result/txt_result/calibration_result_9x6.npz \
+  --calib train_result/txt_result/calibration_result_9x6_image0.npz \
   --square_size 5.0
 ```
 
-## 示例数据
+## Sample data
 
-仓库包含最小示例集，可直接用于试跑：
+The repository includes a small sample dataset for trying the workflow:
 
-- `cali_data/data/image0/` — 标定用棋盘格照片（15 张）
-- `cali_data/data/test_image/` — 验证用样例图
+- `cali_data/data/image0/` — 15 checkerboard photographs for calibration.
+- `cali_data/data/test_image/` — Sample validation images.
 
-## 打包为 macOS 应用（可选）
+## Package as a macOS application
 
 ```bash
 chmod +x build_mac_app.sh
 ./build_mac_app.sh
-# 成功后：dist/ZhangCalibration.app
+# Expected output: dist/ZhangCalibration.app
 ```
 
-## 项目结构
+## Project structure
 
-```
+```text
 calibration/
-├── zhang_calibration_app.py   # GUI 入口
-├── camera_calibration.py      # 标定核心 + CLI
-├── image_undistort.py         # 去畸变验证 + CLI
+├── zhang_calibration_app.py   # GUI entry point
+├── camera_calibration.py      # Calibration core and CLI
+├── image_undistort.py         # Undistortion, validation, and CLI
 ├── requirements.txt
-├── build_mac_app.sh           # macOS 打包脚本
-├── ZhangCalibration.spec      # PyInstaller 配置
-├── cali_data/data/            # 示例图片
-└── 软件手册.md                 # 详细用户手册
+├── build_mac_app.sh           # macOS packaging script
+├── ZhangCalibration.spec      # PyInstaller configuration
+└── cali_data/data/            # Sample images
 ```
